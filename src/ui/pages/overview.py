@@ -98,7 +98,16 @@ def render_overview_page():
         with sim_col2:
             dept_names = {d.id: d.name for d in departments}
             selected_dept_id = st.selectbox("Submitting Department:", options=list(dept_names.keys()), format_func=lambda x: dept_names[x])
-            app_name = st.selectbox("Source Application:", ["EnterpriseCopilot", "CustomerBot", "ContractReviewer", "HRRecruiter", "DataAnalyticsHub"])
+
+            dept_app_options = {
+                "dept_fin": ["ExpenseAssistant", "FinancialAnalyst", "ContractAuditor", "DataAnalyticsHub"],
+                "dept_eng": ["DevCopilot", "ArchitectureReview", "BugTriager", "EnterpriseCopilot"],
+                "dept_mkt": ["MarketingCopywriter", "CampaignIdeaGen", "SocialContentLab"],
+                "dept_hr": ["HRResumeScreen", "PolicyBot", "InterviewCoach", "HRRecruiter"],
+                "dept_cs": ["SupportBot", "TicketResolver", "CustomerSentiment", "CustomerBot"],
+            }
+            available_apps = dept_app_options.get(selected_dept_id, ["DataAnalyticsHub", "EnterpriseCopilot", "ExpenseAssistant"])
+            app_name = st.selectbox("Source Application:", available_apps)
             task_type = st.selectbox("Task Type:", ["General QA", "Code Generation", "Document Summary", "Customer Support", "Data Analysis"])
             min_quality = st.slider("Minimum Quality SLA (1-10):", min_value=7.0, max_value=9.8, value=8.0, step=0.1)
 
