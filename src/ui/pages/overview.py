@@ -115,8 +115,12 @@ def render_overview_page():
 
             with st.spinner("Processing through AI Gateway Pipeline..."):
                 res = gateway.process_request(req_input, persist_to_db=True)
+                st.session_state["gateway_result"] = res
 
-            # Display Pipeline Stepper Results
+        # Display Pipeline Stepper Results if available in session_state
+        if "gateway_result" in st.session_state:
+            res = st.session_state["gateway_result"]
+            st.markdown("---")
             st.markdown("#### 🛡️ AI Gateway Lifecycle Execution")
 
             res_col1, res_col2, res_col3, res_col4 = st.columns(4)
@@ -166,10 +170,12 @@ def render_overview_page():
                 st.error(f"❌ **Request Blocked:** {res.block_reason}")
             else:
                 st.success(f"✅ **Model Selection Rationale:** {res.routing_decision.selection_reason}")
-                with st.expander("View Simulated Model Response"):
+                with st.expander("View Simulated Model Response", expanded=True):
                     st.code(res.simulated_response, language="markdown")
 
-            st.rerun()
+            if st.button("🔄 Clear Result", key="clear_sim_btn"):
+                del st.session_state["gateway_result"]
+                st.rerun()
 
     # -------------------------------------------------------------
     # Visual Analytics Charts
